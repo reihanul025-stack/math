@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Math Adventure — Petualangan Matematika</title>
+<style>
+:root{
+  --navy:#20345d; --blue:#3978d5; --sky:#eaf5ff; --yellow:#ffd45c;
+  --coral:#ff8c75; --green:#69c99a; --purple:#9277df; --ink:#263653;
+  --muted:#71809a; --white:#fff; --shadow:0 12px 30px rgba(42,73,121,.12);
+}
+*{box-sizing:border-box}
+body{margin:0;font-family:"Trebuchet MS",Nunito,system-ui,sans-serif;color:var(--ink);
+  background:linear-gradient(180deg,#e9f5ff 0%,#f7fbff 52%,#fff9e9 100%);min-height:100vh}
+button{font:inherit;cursor:pointer;border:0}
+.topbar{display:flex;align-items:center;justify-content:space-between;gap:14px;padding:16px max(5%,calc((100% - 1160px)/2));}
+.brand{display:flex;align-items:center;gap:10px;font-weight:1000;color:var(--navy);font-size:1.15rem}
+.brand-mark{width:43px;height:43px;border-radius:14px;background:var(--yellow);display:grid;place-items:center;font-size:1.5rem;box-shadow:0 5px 0 #e8b73e}
+.top-actions{display:flex;align-items:center;gap:9px}
+.pill{background:white;border:1px solid #e4edf8;border-radius:999px;padding:9px 14px;font-weight:800;color:var(--navy);box-shadow:0 4px 12px #31547b0c}
+.pill span{margin-right:5px}
+main{max-width:1160px;margin:auto;padding:10px 22px 55px}
+.view{display:none;animation:pop .25s ease}.view.active{display:block}
+@keyframes pop{from{opacity:.5;transform:translateY(7px)}to{opacity:1;transform:none}}
+.hero{position:relative;overflow:hidden;display:grid;grid-template-columns:1.15fr .85fr;align-items:center;gap:20px;
+  padding:48px 48px 42px;border-radius:32px;background:linear-gradient(125deg,#2f70c7,#4b9bdc 65%,#78c8e9);color:white;box-shadow:var(--shadow)}
+.hero:before,.hero:after{content:"";position:absolute;border-radius:50%;background:#ffffff14}
+.hero:before{width:260px;height:260px;right:-50px;top:-100px}.hero:after{width:180px;height:180px;left:44%;bottom:-130px}
+.eyebrow{font-size:.78rem;letter-spacing:2px;font-weight:900;text-transform:uppercase;opacity:.85}
+h1{font-size:clamp(2.2rem,5vw,4.1rem);line-height:1.02;margin:12px 0}
+.hero p{font-size:1.08rem;line-height:1.6;max-width:510px;color:#edf7ff}
+.hero-art{position:relative;z-index:1;text-align:center;font-size:clamp(7rem,16vw,12rem);filter:drop-shadow(0 14px 5px #16477b35)}
+.btn{border-radius:15px;padding:13px 20px;font-weight:900;transition:.18s;box-shadow:0 5px 0 #00000018}
+.btn:hover{transform:translateY(-2px);filter:brightness(1.03)}.btn:active{transform:translateY(2px);box-shadow:none}
+.btn-yellow{background:var(--yellow);color:#5b4510}.btn-white{background:white;color:var(--blue)}
+.btn-blue{background:var(--blue);color:white}.btn-soft{background:#edf4ff;color:var(--blue);box-shadow:none}
+.hero .btn{margin-top:12px}
+.section-head{display:flex;align-items:end;justify-content:space-between;gap:12px;margin:30px 2px 15px}
+.section-head h2{margin:0;font-size:1.45rem;color:var(--navy)}.section-head p{margin:5px 0 0;color:var(--muted);font-size:.92rem}
+.quick-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:15px}
+.quick-card,.panel,.world-card,.lesson-card{background:white;border:1px solid #e6eef8;border-radius:22px;padding:20px;box-shadow:var(--shadow)}
+.quick-card{display:flex;align-items:center;gap:14px}.quick-icon{width:55px;height:55px;border-radius:17px;display:grid;place-items:center;font-size:1.8rem;background:#fff3ce}
+.quick-card:nth-child(2) .quick-icon{background:#e6f7ed}.quick-card:nth-child(3) .quick-icon{background:#eeeaff}
+.quick-card b{display:block;color:var(--navy);margin-bottom:4px}.quick-card small{color:var(--muted)}
+.nav-row{display:flex;flex-wrap:wrap;gap:9px;margin:23px 0}
+.nav-btn{padding:10px 15px;border-radius:999px;background:white;border:1px solid #e2ebf6;color:var(--navy);font-weight:800}
+.nav-btn.active,.nav-btn:hover{background:var(--navy);color:white}
+.page-title{margin:18px 0 6px;font-size:2rem;color:var(--navy)}.lead{margin:0 0 22px;color:var(--muted);line-height:1.5}
+.world-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:18px}
+.world-card{display:flex;align-items:center;gap:18px;position:relative;overflow:hidden}
+.world-art{width:112px;height:112px;flex:0 0 112px;border-radius:24px;display:grid;place-items:center;font-size:3.8rem;background:linear-gradient(140deg,#d8f4d8,#a9dfb0)}
+.world-card:nth-child(2) .world-art{background:linear-gradient(140deg,#ffe8b7,#ffc96e)}
+.world-card:nth-child(3) .world-art{background:linear-gradient(140deg,#d9edff,#91c9f1)}
+.world-card:nth-child(4) .world-art{background:linear-gradient(140deg,#eadfff,#c4a8fa)}
+.world-card h3{margin:0 0 6px;color:var(--navy)}.world-card p{margin:0 0 12px;color:var(--muted);font-size:.9rem;line-height:1.4}
+.world-card .btn{padding:10px 15px;font-size:.9rem}
+.game-layout{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(250px,.75fr);gap:18px;align-items:start}
+.game-board{background:linear-gradient(145deg,#dff5e5,#b9e6cb);border:8px solid white;border-radius:27px;padding:14px;box-shadow:var(--shadow)}
+.board-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:7px}
+.tile{aspect-ratio:1;border-radius:14px;background:#fff9e8;border:2px solid #e9d9a7;display:flex;flex-direction:column;align-items:center;justify-content:center;position:relative;font-weight:900;color:#8a7541;font-size:clamp(.72rem,1.7vw,1rem)}
+.tile:nth-child(4n+2){background:#f0f7ff;border-color:#c9e1fa;color:#5485b7}
+.tile:nth-child(4n+3){background:#fff0e9;border-color:#f7d0bd;color:#bd775e}
+.tile .tile-emoji{font-size:clamp(1rem,3vw,1.8rem);line-height:1.1;margin-bottom:3px}
+.tile .player{position:absolute;right:2px;bottom:0;font-size:clamp(1.1rem,3vw,1.7rem);filter:drop-shadow(0 2px 1px #0002)}
+.tile.start{background:#d8f8e2;border-color:#7bd49b}.tile.finish{background:#fff0b8;border-color:#efc84f}
+.side-stack{display:grid;gap:14px}
+.panel h3{margin:0 0 12px;color:var(--navy)}
+.dice-face{font-size:4rem;text-align:center;line-height:1.2;margin:5px}
+.roll-btn{width:100%;margin-top:8px}
+.stats{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+.stat{background:#f3f7ff;border-radius:14px;padding:12px}.stat small{display:block;color:var(--muted);font-weight:700}.stat b{font-size:1.3rem;color:var(--navy)}
+.progress-track{height:11px;background:#edf1f8;border-radius:99px;overflow:hidden;margin:8px 0}.progress-fill{height:100%;background:linear-gradient(90deg,#69c99a,#3eaa83);width:0%;transition:.3s}
+.back-btn{background:transparent;color:var(--blue);font-weight:900;padding:8px 0;margin-bottom:8px}
+.lesson-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:16px}
+.lesson-card h3{margin:8px 0;color:var(--navy)}.lesson-card p{color:var(--muted);line-height:1.55}
+.example{background:#f2f8ff;border-radius:15px;padding:15px;text-align:center;font-size:1.4rem;font-weight:1000;color:var(--blue);margin:12px 0}
+.modal-backdrop{position:fixed;inset:0;background:#172744a8;display:none;align-items:center;justify-content:center;padding:18px;z-index:10}
+.modal-backdrop.show{display:flex}
+.modal{background:white;width:min(100%,470px);border-radius:26px;padding:25px;box-shadow:0 25px 70px #10213b55;animation:pop .2s}
+.modal-top{display:flex;justify-content:space-between;align-items:center}.modal h2{color:var(--navy);margin:12px 0}
+.question{font-size:2rem;text-align:center;font-weight:1000;color:var(--blue);padding:20px 8px}
+.answers{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.answer{padding:14px;border:2px solid #e3ebf6;border-radius:14px;background:#f8fbff;font-weight:900;color:var(--navy);font-size:1.1rem}
+.answer:hover{border-color:var(--blue);background:#edf5ff}
+.feedback{min-height:44px;margin:13px 0 0;padding:10px;border-radius:12px;background:#f3f7ff;color:var(--navy);font-weight:700;line-height:1.4}
+.close-btn{background:#edf2f8;border-radius:50%;width:34px;height:34px;font-size:1.1rem;color:var(--navy)}
+.reward{text-align:center;padding:18px}.reward .big{font-size:5rem}.reward h2{color:var(--navy)}
+footer{text-align:center;color:#8290a5;font-size:.82rem;padding:25px 12px}
+@media(max-width:760px){
+ .hero{grid-template-columns:1fr;padding:30px 25px;text-align:center}.hero p{margin-left:auto;margin-right:auto}.hero-art{font-size:7rem;margin-top:-5px}
+ .quick-grid{grid-template-columns:1fr}.world-grid,.lesson-grid{grid-template-columns:1fr}
+ .game-layout{grid-template-columns:1fr}.game-board{padding:8px;border-width:5px}.board-grid{gap:4px}.tile{border-radius:9px}
+ .topbar{padding:12px 16px}main{padding:8px 14px 35px}.pill{padding:8px 10px;font-size:.85rem}
+ .world-art{width:85px;height:85px;flex-basis:85px;font-size:3rem}
+}
+</style>
+</head>
+<body>
+<header class="topbar">
+  <div class="brand"><div class="brand-mark">🧭</div><span>MATH ADVENTURE</span></div>
+  <div class="top-actions">
+    <div class="pill"><span>⭐</span><b id="topStars">0</b></div>
+    <div class="pill"><span>🏅</span><b id="topLevel">Level 1</b></div>
+  </div>
+</header>
+
+<main>
+  <section id="home" class="view active">
+    <div class="hero">
+      <div>
+        <div class="eyebrow">Belajar jadi petualangan!</div>
+        <h1>Jelajahi Dunia<br>Matematika!</h1>
+        <p>Siapkan dirimu untuk melewati tantangan, menjawab teka-teki, dan mengumpulkan bintang. Yuk, mulai petualanganmu!</p>
+        <button class="btn btn-yellow" onclick="showView('worlds')">🚀 Mulai Petualangan</button>
+      </div>
+      <div class="hero-art" aria-label="Maskot robot">🤖</div>
+    </div>
+    <div class="section-head"><div><h2>Siap untuk belajar?</h2><p>Pilih kegiatan yang ingin kamu lakukan.</p></div></div>
+    <div class="quick-grid">
+      <div class="quick-card"><div class="quick-icon">📚</div><div><b>Belajar Materi</b><small>Pahami perkalian dan pembagian</small></div><button class="btn btn-soft" onclick="showView('lessons')">Buka</button></div>
+      <div class="quick-card"><div class="quick-icon">🗺️</div><div><b>Peta Petualangan</b><small>Pilih dunia dan mulai bermain</small></div><button class="btn btn-soft" onclick="showView('worlds')">Buka</button></div>
+      <div class="quick-card"><div class="quick-icon">🏆</div><div><b>Progres Belajar</b><small>Lihat bintang dan pencapaianmu</small></div><button class="btn btn-soft" onclick="showView('progress')">Buka</button></div>
+    </div>
+    <div class="nav-row">
+      <button class="nav-btn" onclick="showView('home')">🏠 Beranda</button>
+      <button class="nav-btn" onclick="showView('lessons')">📖 Materi</button>
+      <button class="nav-btn" onclick="showView('worlds')">🌍 Petualangan</button>
+      <button class="nav-btn" onclick="showView('progress')">⭐ Progres</button>
+    </div>
+  </section>
+
+  <section id="worlds" class="view">
+    <button class="back-btn" onclick="showView('home')">← Kembali ke beranda</button>
+    <h2 class="page-title">Pilih Dunia Petualangan</h2>
+    <p class="lead">Setiap dunia punya tantangan seru. Pilih satu dan buktikan kemampuanmu!</p>
+    <div class="world-grid">
+      <article class="world-card"><div class="world-art">🌳</div><div><h3>Hutan Perkalian</h3><p>Jelajahi hutan sambil belajar perkalian dasar.</p><button class="btn btn-blue" onclick="startGame('Hutan Perkalian')">Jelajahi Dunia</button></div></article>
+      <article class="world-card"><div class="world-art">🍬</div><div><h3>Desa Pembagian</h3><p>Belajar membagi benda sama banyak.</p><button class="btn btn-blue" onclick="startGame('Desa Pembagian')">Jelajahi Dunia</button></div></article>
+      <article class="world-card"><div class="world-art">🏝️</div><div><h3>Pulau Tantangan</h3><p>Campuran soal perkalian dan pembagian.</p><button class="btn btn-blue" onclick="startGame('Pulau Tantangan')">Jelajahi Dunia</button></div></article>
+      <article class="world-card"><div class="world-art">🏰</div><div><h3>Kastel Matematika</h3><p>Selesaikan soal cerita untuk mencapai kastel.</p><button class="btn btn-blue" onclick="startGame('Kastel Matematika')">Jelajahi Dunia</button></div></article>
+    </div>
+  </section>
+
+  <section id="lessons" class="view">
+    <button class="back-btn" onclick="showView('home')">← Kembali ke beranda</button>
+    <h2 class="page-title">Yuk, Kenali Matematika!</h2>
+    <p class="lead">Pahami idenya dulu, lalu coba tantang dirimu di papan permainan.</p>
+    <div class="lesson-grid">
+      <article class="lesson-card"><div style="font-size:2.4rem">🍎🍎🍎</div><h3>Perkalian</h3><p>Perkalian adalah penjumlahan berulang dengan jumlah yang sama.</p><div class="example">3 × 4 = 4 + 4 + 4 = 12</div><p>Artinya ada 3 kelompok. Setiap kelompok berisi 4 apel. Jumlah semuanya adalah 12 apel.</p></article>
+      <article class="lesson-card"><div style="font-size:2.4rem">🍪🍪🍪</div><h3>Pembagian</h3><p>Pembagian adalah kegiatan membagi sesuatu menjadi beberapa kelompok sama banyak.</p><div class="example">12 ÷ 3 = 4</div><p>Artinya 12 kue dibagikan kepada 3 anak. Setiap anak mendapatkan 4 kue.</p></article>
+    </div>
+    <div class="panel" style="margin-top:16px"><h3>💡 Ingat, ya!</h3><p style="margin:0;color:var(--muted);line-height:1.6">Kamu boleh mencoba lebih dari sekali. Kesalahan adalah bagian dari proses belajar. Baca petunjuknya, lalu coba lagi!</p></div>
+    <button class="btn btn-blue" style="margin-top:18px" onclick="showView('worlds')">Aku Siap Bermain →</button>
+  </section>
+
+  <section id="game" class="view">
+    <button class="back-btn" onclick="showView('worlds')">← Ganti dunia</button>
+    <div class="section-head" style="margin-top:5px"><div><h2 id="worldTitle">Hutan Perkalian</h2><p>Lempar dadu, melangkah, dan selesaikan tantangannya!</p></div><span class="pill">🧭 Petualangan</span></div>
+    <div class="game-layout">
+      <div class="game-board"><div id="board" class="board-grid"></div></div>
+      <aside class="side-stack">
+        <div class="panel">
+          <h3>🎲 Giliranmu!</h3><div class="dice-face" id="dice">🎲</div>
+          <button class="btn btn-yellow roll-btn" id="rollBtn" onclick="rollDice()">Lempar Dadu</button>
+          <p id="gameMessage" style="color:var(--muted);font-size:.88rem;text-align:center;margin:12px 0 0">Tekan tombol untuk memulai langkahmu.</p>
+        </div>
+        <div class="panel">
+          <h3>⭐ Statistik Petualangan</h3>
+          <div class="stats">
+            <div class="stat"><small>Posisi</small><b id="position">0 / 24</b></div>
+            <div class="stat"><small>Bintang sesi</small><b id="sessionStars">0</b></div>
+          </div>
+          <div style="display:flex;justify-content:space-between;margin-top:15px;font-size:.85rem;font-weight:800"><span>Perjalanan</span><span id="percent">0%</span></div>
+          <div class="progress-track"><div class="progress-fill" id="gameProgress"></div></div>
+        </div>
+        <div class="panel"><h3>🧑‍🚀 Misi</h3><p style="color:var(--muted);line-height:1.5;margin:0">Selesaikan tantangan di sepanjang jalan dan capai kotak FINISH untuk menuntaskan dunia ini.</p></div>
+      </aside>
+    </div>
+  </section>
+
+  <section id="progress" class="view">
+    <button class="back-btn" onclick="showView('home')">← Kembali ke beranda</button>
+    <h2 class="page-title">Progres Petualanganmu</h2>
+    <p class="lead">Setiap langkah kecil adalah kemajuan. Terus semangat belajar!</p>
+    <div class="quick-grid">
+      <div class="quick-card"><div class="quick-icon">⭐</div><div><b id="progressStars">0 bintang</b><small>Total bintang terkumpul</small></div></div>
+      <div class="quick-card"><div class="quick-icon">🧩</div><div><b id="progressAnswers">0 soal</b><small>Soal yang sudah dijawab</small></div></div>
+      <div class="quick-card"><div class="quick-icon">✅</div><div><b id="progressCorrect">0 benar</b><small>Jawaban benar</small></div></div>
+    </div>
+    <div class="panel" style="margin-top:18px"><h3>Catatan perjalanan</h3><p id="progressNote" style="color:var(--muted);line-height:1.6">Kamu belum memulai petualangan. Ayo pilih dunia dan kumpulkan bintang pertamamu!</p><button class="btn btn-blue" onclick="showView('worlds')">Lanjut Bertualang</button></div>
+  </section>
+</main>
+
+<footer>Math Adventure · Belajar matematika dengan cara yang menyenangkan 🌟</footer>
+
+<div class="modal-backdrop" id="questionModal">
+  <div class="modal">
+    <div class="modal-top"><span class="pill">✨ Tantangan Matematika</span><button class="close-btn" onclick="closeQuestion()" aria-label="Tutup">×</button></div>
+    <h2 id="questionLabel">Ayo pikirkan!</h2>
+    <div class="question" id="questionText">4 × 5 = ?</div>
+    <div class="answers" id="answerOptions"></div>
+    <div class="feedback" id="feedback">Pilih jawaban yang menurutmu benar.</div>
+    <button class="btn btn-blue" id="continueBtn" style="width:100%;margin-top:12px;display:none" onclick="closeQuestion()">Lanjutkan Petualangan</button>
+  </div>
+</div>
+
+<div class="modal-backdrop" id="finishModal">
+  <div class="modal reward"><div class="big">🏆</div><h2>Petualangan Selesai!</h2><p id="finishText" style="color:var(--muted);line-height:1.5">Hebat! Kamu berhasil mencapai garis akhir.</p><button class="btn btn-yellow" onclick="finishAndReturn()">Kembali ke Peta</button></div>
+</div>
+
+<script>
+let playerPos=0, sessionStars=0, currentWorld="Hutan Perkalian", questionLocked=false;
+let totalStars=Number(localStorage.getItem("maStars")||0);
+let totalAnswers=Number(localStorage.getItem("maAnswers")||0);
+let totalCorrect=Number(localStorage.getItem("maCorrect")||0);
+let completed=Number(localStorage.getItem("maCompleted")||0);
+const $=id=>document.getElementById(id);
+
+function showView(id){
+  document.querySelectorAll(".view").forEach(v=>v.classList.remove("active"));
+  $(id).classList.add("active");
+  if(id==="progress") updateProgress();
+  window.scrollTo({top:0,behavior:"smooth"});
+}
+function updateTop(){
+  $("topStars").textContent=totalStars;
+  $("topLevel").textContent="Level "+(completed+1);
+}
+function updateProgress(){
+  $("progressStars").textContent=totalStars+" bintang";
+  $("progressAnswers").textContent=totalAnswers+" soal";
+  $("progressCorrect").textContent=totalCorrect+" benar";
+  $("progressNote").textContent=totalAnswers
+    ? `Kamu sudah menjawab ${totalAnswers} soal dan ${totalCorrect} di antaranya benar. Terus berlatih agar semakin percaya diri!`
+    : "Kamu belum memulai petualangan. Ayo pilih dunia dan kumpulkan bintang pertamamu!";
+}
+function startGame(world){
+  currentWorld=world;playerPos=0;sessionStars=0;questionLocked=false;
+  $("worldTitle").textContent=world;$("dice").textContent="🎲";
+  $("gameMessage").textContent="Tekan tombol untuk memulai langkahmu.";
+  $("rollBtn").disabled=false;$("rollBtn").style.opacity="1";
+  renderBoard();updateGameStats();showView("game");
+}
+function renderBoard(){
+  const board=$("board");board.innerHTML="";
+  for(let i=0;i<25;i++){
+    const row=Math.floor(i/5), offset=i%5;
+    const col=row%2===0?offset:4-offset;
+    const tile=document.createElement("div");
+    tile.className="tile"+(i===0?" start":"")+(i===24?" finish":"");
+    tile.style.gridRow=row+1;tile.style.gridColumn=col+1;
+    let emoji=i===0?"🚩":i===24?"🏁":([4,9,14,19].includes(i)?"⭐":[7,17].includes(i)?"🎁":"🌼");
+    tile.innerHTML=`<span class="tile-emoji">${emoji}</span><span>${i===0?"START":i===24?"FINISH":i}</span>`;
+    if(i===playerPos){const player=document.createElement("span");player.className="player";player.textContent="🧑‍🚀";tile.appendChild(player)}
+    board.appendChild(tile);
+  }
+}
+function updateGameStats(){
+  $("position").textContent=playerPos+" / 24";
+  $("sessionStars").textContent=sessionStars;
+  const pct=Math.round(playerPos/24*100);
+  $("percent").textContent=pct+"%";$("gameProgress").style.width=pct+"%";
+}
+function rollDice(){
+  if(questionLocked||playerPos>=24)return;
+  const n=Math.floor(Math.random()*6)+1;
+  $("dice").textContent=["","⚀","⚁","⚂","⚃","⚄","⚅"][n];
+  playerPos=Math.min(24,playerPos+n);
+  $("gameMessage").textContent=`Kamu mendapatkan angka ${n}. Ayo hadapi tantangannya!`;
+  renderBoard();updateGameStats();
+  if(playerPos===24){setTimeout(finishGame,350);return}
+  $("rollBtn").disabled=true;$("rollBtn").style.opacity=".55";
+  setTimeout(openQuestion,350);
+}
+function makeQuestion(){
+  let a,b,answer,op,explain;
+  if(currentWorld==="Hutan Perkalian"){
+    a=Math.floor(Math.random()*8)+2;b=Math.floor(Math.random()*5)+2;answer=a*b;op="×";
+    explain=`${a} kelompok, masing-masing berisi ${b}. Jadi ${a} × ${b} = ${answer}.`;
+  }else if(currentWorld==="Desa Pembagian"){
+    b=Math.floor(Math.random()*5)+2;answer=Math.floor(Math.random()*8)+2;a=b*answer;op="÷";
+    explain=`${a} benda dibagi menjadi ${b} kelompok sama banyak. Setiap kelompok berisi ${answer}.`;
+  }else{
+    if(Math.random()<.5){a=Math.floor(Math.random()*8)+2;b=Math.floor(Math.random()*5)+2;answer=a*b;op="×";explain=`${a} kelompok berisi ${b} benda berjumlah ${answer}.`}
+    else{b=Math.floor(Math.random()*5)+2;answer=Math.floor(Math.random()*8)+2;a=b*answer;op="÷";explain=`${a} dibagi ${b} sama banyak hasilnya ${answer}.`}
+  }
+  const choices=new Set([answer]);
+  while(choices.size<4){let v=answer+Math.floor(Math.random()*11)-5;if(v>0)choices.add(v)}
+  return {text:`${a} ${op} ${b} = ?`,answer,choices:[...choices].sort(()=>Math.random()-.5),explain};
+}
+let activeQuestion=null;
+function openQuestion(){
+  activeQuestion=makeQuestion();questionLocked=true;
+  $("questionText").textContent=activeQuestion.text;
+  $("questionLabel").textContent=currentWorld==="Kastel Matematika"?"Tantangan cerita dimulai!":"Ayo pecahkan soal ini!";
+  $("feedback").textContent="Pilih jawaban yang menurutmu benar.";
+  $("continueBtn").style.display="none";$("answerOptions").innerHTML="";
+  activeQuestion.choices.forEach(v=>{
+    const btn=document.createElement("button");btn.className="answer";btn.textContent=v;
+    btn.onclick=()=>checkAnswer(v,btn);$("answerOptions").appendChild(btn);
+  });
+  $("questionModal").classList.add("show");
+}
+function checkAnswer(value,button){
+  if(!questionLocked||$("continueBtn").style.display!=="none")return;
+  totalAnswers++;
+  document.querySelectorAll(".answer").forEach(b=>b.disabled=true);
+  if(value===activeQuestion.answer){
+    totalCorrect++;sessionStars++;totalStars++;
+    button.style.background="#e2f8eb";button.style.borderColor="#69c99a";
+    $("feedback").textContent="🎉 Hebat, jawabanmu benar! "+activeQuestion.explain;
+  }else{
+    button.style.background="#fff0ec";button.style.borderColor="#ff9a84";
+    $("feedback").textContent="Tidak apa-apa, ayo belajar bersama. Jawaban yang benar adalah "+activeQuestion.answer+". "+activeQuestion.explain;
+  }
+  localStorage.setItem("maStars",totalStars);localStorage.setItem("maAnswers",totalAnswers);
+  localStorage.setItem("maCorrect",totalCorrect);updateTop();
+  $("continueBtn").style.display="block";
+}
+function closeQuestion(){
+  $("questionModal").classList.remove("show");questionLocked=false;
+  $("rollBtn").disabled=false;$("rollBtn").style.opacity="1";
+  $("gameMessage").textContent="Bagus! Lempar dadu lagi untuk melanjutkan.";
+}
+function finishGame(){
+  $("rollBtn").disabled=true;
+  completed++;localStorage.setItem("maCompleted",completed);updateTop();
+  $("finishText").textContent=`Kamu berhasil menyelesaikan ${currentWorld} dan mengumpulkan ${sessionStars} bintang pada petualangan ini. Hebat!`;
+  $("finishModal").classList.add("show");
+}
+function finishAndReturn(){
+  $("finishModal").classList.remove("show");showView("worlds");
+}
+updateTop();
+</script>
+</body>
+</html>
